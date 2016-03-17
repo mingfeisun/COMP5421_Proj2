@@ -2,5 +2,8 @@
 *~
 *.swp
 data/
+code/vlfeat/
+code/visualizations/
 html/
 *.zip
+*.gz
