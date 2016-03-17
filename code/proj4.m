@@ -37,13 +37,19 @@
 % set up paths to VLFeat functions. 
 % See http://www.vlfeat.org/matlab/matlab.html for VLFeat Matlab documentation
 % This should work on 32 and 64 bit versions of Windows, MacOS, and Linux
+
+%% configuration: folder, vlfeat
+
 close all
 clear
 run('vlfeat/toolbox/vl_setup')
 
 [~,~,~] = mkdir('visualizations');
 
+%% following is the main code
+
 data_path = '../data/'; %change if you want to work with a network copy
+% fullfile: build full filename from parts
 train_path_pos = fullfile(data_path, 'caltech_faces/Caltech_CropFaces'); %Positive training examples. 36x36 head crops
 non_face_scn_path = fullfile(data_path, 'train_non_face_scenes'); %We can mine random or hard negatives from here
 test_scn_path = fullfile(data_path,'test_scenes/test_jpg'); %CMU+MIT test scenes
@@ -60,9 +66,12 @@ feature_params = struct('template_size', 36, 'hog_cell_size', 6);
 %% Step 1. Load positive training crops and random negative examples
 %YOU CODE 'get_positive_features' and 'get_random_negative_features'
 
+% TODO
 features_pos = get_positive_features( train_path_pos, feature_params );
 
 num_negative_examples = 10000; %Higher will work strictly better, but you should start with 10000 for debugging
+
+% TODO
 features_neg = get_random_negative_features( non_face_scn_path, feature_params, num_negative_examples);
 
     
@@ -75,6 +84,7 @@ features_neg = get_random_negative_features( non_face_scn_path, feature_params, 
 % work best e.g. 0.0001, but you can try other values
 
 %YOU CODE classifier training. Make sure the outputs are 'w' and 'b'.
+% TODO
 w = rand((feature_params.template_size / feature_params.hog_cell_size)^2 * 31,1); %placeholder, delete
 b = rand(1); %placeholder, delete
 
@@ -126,6 +136,7 @@ imwrite(hog_template_image, 'visualizations/hog_template.png')
 % YOU CODE 'run_detector'. Make sure the outputs are properly structured!
 % They will be interpreted in Step 6 to evaluate and visualize your
 % results. See run_detector.m for more details.
+% TODO
 [bboxes, confidences, image_ids] = run_detector(test_scn_path, w, b, feature_params);
 
 % run_detector will have (at least) two parameters which can heavily
