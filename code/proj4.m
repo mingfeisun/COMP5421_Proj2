@@ -5,11 +5,13 @@
 
 % Code structure:
 % proj4.m <--- You code parts of this
+% TODO
 %  + get_positive_features.m  <--- You code this
 %  + get_random_negative_features.m  <--- You code this
 %   [classifier training]   <--- You code this
 %  + report_accuracy.m
 %  + run_detector.m  <--- You code this
+
 %    + non_max_supr_bbox.m
 %  + evaluate_all_detections.m
 %    + VOCap.m
