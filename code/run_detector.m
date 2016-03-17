@@ -55,6 +55,7 @@ for i = 1:length(test_scenes)
         img = rgb2gray(img);
     end
     
+    % TODO
     %You can delete all of this below.
     % Let's create 15 random detections per image
     cur_x_min = rand(15,1) * size(img,2);
