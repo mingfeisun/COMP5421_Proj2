@@ -1,4 +1,6 @@
 *.pdf
+*~
+*.swp
 data/
 html/
 *.zip
