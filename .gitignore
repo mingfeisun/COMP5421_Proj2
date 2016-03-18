@@ -3,6 +3,7 @@
 *.swp
 data/
 code/vlfeat/
+vlfeat-0.9.20/
 code/visualizations/
 html/
 *.zip
