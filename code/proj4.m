@@ -85,7 +85,7 @@ features_neg = get_random_negative_features( non_face_scn_path, feature_params, 
 
 %YOU CODE classifier training. Make sure the outputs are 'w' and 'b'.
 % TODO
-[w, b] = classifier_training(features_pos, features_neg)
+[w, b] = classifier_training(features_pos, features_neg, feature_params);
 
 %% step 3. Examine learned classifier
 % You don't need to modify anything in this section. The section first
