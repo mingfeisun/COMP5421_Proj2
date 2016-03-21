@@ -27,9 +27,16 @@ function features_pos = get_positive_features(train_path_pos, feature_params)
 %  http://www.vlfeat.org/matlab/vl_hog.html  (API)
 %  http://www.vlfeat.org/overview/hog.html   (Tutorial)
 % rgb2gray
+    features_pos=[];
 
-image_files = dir( fullfile( train_path_pos, '*.jpg') ); %Caltech Faces stored as .jpg
-num_images = length(image_files);
+    image_files = dir( fullfile( train_path_pos, '*.jpg') ); %Caltech Faces stored as .jpg
+    num_images = length(image_files);
 
-% placeholder to be deleted
-features_pos = rand(100, (feature_params.template_size / feature_params.hog_cell_size)^2 * 31);
+    % FIXME
+    for index = 0:num_images
+        img = image_files(index);
+        hog = vl_hog(img, feature_params.hog_cell_size);
+        features_pos=[features_pos; reshape(hog, 1, length(hog))];
+    end
+
+

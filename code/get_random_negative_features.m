@@ -32,8 +32,14 @@ function features_neg = get_random_negative_features(non_face_scn_path, feature_
 %  http://www.vlfeat.org/overview/hog.html   (Tutorial)
 % rgb2gray
 
-image_files = dir( fullfile( non_face_scn_path, '*.jpg' ));
-num_images = length(image_files);
+    image_files = dir( fullfile( non_face_scn_path, '*.jpg' ));
+    num_images = length(image_files);
+    features_neg = [];
 
-% placeholder to be deleted
-features_neg = rand(100, (feature_params.template_size / feature_params.hog_cell_size)^2 * 31);
+    % FIXME
+    for index = 0:num_images
+        img = image_files(index);
+        hog = vl_hog(img, feature_params.hog_cell_size);
+        features_neg=[features_neg; reshape(hog, 1, length(hog))];
+    end
+
