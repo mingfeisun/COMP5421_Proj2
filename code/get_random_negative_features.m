@@ -36,10 +36,18 @@ function features_neg = get_random_negative_features(non_face_scn_path, feature_
     num_images = length(image_files);
     features_neg = [];
 
-    for index = 1:num_images
+    count = 1;
+
+    while count <= num_samples
+        index = randi(num_images);
         img_path = fullfile(non_face_scn_path, image_files(index).name);
         img = imread(img_path);
-        hog = vl_hog(single(img), feature_params.hog_cell_size);
+        [hei, wid, dim] = size(img);
+        pos_top = randi(hei - feature_params.template_size);
+        pos_left = randi(wid - feature_params.template_size);
+        img_temp = imcrop(img, [pos_left, pos_top, feature_params.template_size-1, feature_params.template_size-1]);
+        hog = vl_hog(single(img_temp), feature_params.hog_cell_size);
         features_neg=[features_neg; hog(:)'];
+        count = count + 1;
     end
 

@@ -5,7 +5,6 @@
 
 % Code structure:
 % proj4.m <--- You code parts of this
-% TODO
 %  + get_positive_features.m  <--- You code this
 %  + get_random_negative_features.m  <--- You code this
 %   [classifier training]   <--- You code this
@@ -64,16 +63,24 @@ feature_params = struct('template_size', 36, 'hog_cell_size', 6);
 
 
 %% Step 1. Load positive training crops and random negative examples
-%YOU CODE 'get_positive_features' and 'get_random_negative_features'
+% load the examples if exist
+% YOU CODE 'get_positive_features' and 'get_random_negative_features'
+% ***********************************TODO*********************************************************************************
 
-% FIXME
-features_pos = get_positive_features( train_path_pos, feature_params );
+if exist('features_pos.mat', 'file') && exist('features_neg.mat', 'file')
+    load('features_pos.mat');
+    load('features_neg.mat');
+else
+    num_negative_examples = 10000; %Higher will work strictly better, but you should start with 10000 for debugging
+    features_pos = get_positive_features( train_path_pos, feature_params );
+    features_neg = get_random_negative_features( non_face_scn_path, feature_params, num_negative_examples);
+    save('features_pos.mat', 'features_pos');
+    save('features_neg.mat', 'features_neg');
+end
 
-num_negative_examples = 10000; %Higher will work strictly better, but you should start with 10000 for debugging
-
-% FIXME
-features_neg = get_random_negative_features( non_face_scn_path, feature_params, num_negative_examples);
+% ************************************************************************************************************************
     
+
 %% step 2. Train Classifier
 % Use vl_svmtrain on your training features to get a linear classifier
 % specified by 'w' and 'b'
@@ -81,10 +88,12 @@ features_neg = get_random_negative_features( non_face_scn_path, feature_params, 
 % http://www.vlfeat.org/sandbox/matlab/vl_svmtrain.html
 % 'lambda' is an important parameter, try many values. Small values seem to
 % work best e.g. 0.0001, but you can try other values
-
 %YOU CODE classifier training. Make sure the outputs are 'w' and 'b'.
-% FIXME
+% ***********************************TODO*********************************************************************************
+
 [w, b] = classifier_training(features_pos, features_neg, feature_params);
+
+% ************************************************************************************************************************
 
 %% step 3. Examine learned classifier
 % You don't need to modify anything in this section. The section first
@@ -130,13 +139,16 @@ imwrite(hog_template_image, 'visualizations/hog_template.png')
 % images in 'non_face_scn_path', and keep all of the features above some
 % confidence level.
 
+
 %% Step 5. Run detector on test set.
-% YOU CODE 'run_detector'. Make sure the outputs are properly structured!
 % They will be interpreted in Step 6 to evaluate and visualize your
 % results. See run_detector.m for more details.
-%
-% FIXME
+% YOU CODE 'run_detector'. Make sure the outputs are properly structured!
+% ***********************************TODO*********************************************************************************
+
 [bboxes, confidences, image_ids] = run_detector(test_scn_path, w, b, feature_params);
+
+% ************************************************************************************************************************
 
 % run_detector will have (at least) two parameters which can heavily
 % influence performance -- how much to rescale each step of your multiscale
