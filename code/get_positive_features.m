@@ -16,7 +16,6 @@ function features_pos = get_positive_features(train_path_pos, feature_params)
 %      slower because the feature dimensionality increases and more
 %      importantly the step size of the classifier decreases at test time.
 
-
 % 'features_pos' is N by D matrix where N is the number of faces and D
 % is the template dimensionality, which would be
 %   (feature_params.template_size / feature_params.hog_cell_size)^2 * 31
@@ -33,10 +32,11 @@ function features_pos = get_positive_features(train_path_pos, feature_params)
     num_images = length(image_files);
 
     % FIXME
-    for index = 0:num_images
-        img = image_files(index);
-        hog = vl_hog(img, feature_params.hog_cell_size);
-        features_pos=[features_pos; reshape(hog, 1, length(hog))];
+    for index = 1:num_images
+        img_path = fullfile(train_path_pos, image_files(index).name);
+        img = imread(img_path);
+        hog = vl_hog(single(img), feature_params.hog_cell_size);
+        features_pos=[features_pos; hog(:)'];
     end
 
 

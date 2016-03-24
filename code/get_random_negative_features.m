@@ -36,10 +36,10 @@ function features_neg = get_random_negative_features(non_face_scn_path, feature_
     num_images = length(image_files);
     features_neg = [];
 
-    % FIXME
-    for index = 0:num_images
-        img = image_files(index);
-        hog = vl_hog(img, feature_params.hog_cell_size);
-        features_neg=[features_neg; reshape(hog, 1, length(hog))];
+    for index = 1:num_images
+        img_path = fullfile(non_face_scn_path, image_files(index).name);
+        img = imread(img_path);
+        hog = vl_hog(single(img), feature_params.hog_cell_size);
+        features_neg=[features_neg; hog(:)'];
     end
 
