@@ -50,12 +50,12 @@ function [bboxes, confidences, image_ids] = ....
           
         fprintf('Detecting faces in %s\n', test_scenes(i).name)
         img = imread( fullfile( test_scn_path, test_scenes(i).name ));
-        img = single(img)/255;
-        if(size(img,3) > 1)
-            img = rgb2gray(img);
-        end
 
         % *******************************TODO*********************************************
+
+        %if i > 2
+            %break;
+        %end
         
         cur_x_min = [];
         cur_y_min = [];
@@ -76,9 +76,9 @@ function [bboxes, confidences, image_ids] = ....
                     col = wid - temp_size ;
                 end
                 img_temp = imcrop(img, [col, row, temp_size-1, temp_size-1]);
-                hog = vl_hog(img_temp, feature_params.hog_cell_size);
+                hog = vl_hog(single(img_temp), feature_params.hog_cell_size);
                 conf = (hog(:)')*w + b;
-                if conf > -1.0
+                if conf > 0.0
                     cur_x_min = [cur_x_min; col];
                     cur_y_min= [cur_y_min; row];
                     cur_confidences = [cur_confidences; conf];
@@ -106,7 +106,6 @@ function [bboxes, confidences, image_ids] = ....
         %anything in non_max_supr_bbox, but you can.
 
         [is_maximum] = non_max_supr_bbox(cur_bboxes, cur_confidences, size(img));
-
         cur_confidences = cur_confidences(is_maximum,:);
         cur_bboxes      = cur_bboxes(     is_maximum,:);
         cur_image_ids   = cur_image_ids(  is_maximum,:);

@@ -33,11 +33,8 @@ function features_pos = get_positive_features(train_path_pos, feature_params)
 
     for index = 1:num_images
         img_path = fullfile(train_path_pos, image_files(index).name);
-        img = single(imread(img_path))/255;
-        if(size(img,3) > 1)
-            img = rgb2gray(img);
-        end
-        hog = vl_hog(img, feature_params.hog_cell_size);
+        img = imread(img_path);
+        hog = vl_hog(single(img), feature_params.hog_cell_size);
         features_pos=[features_pos; hog(:)'];
     end
 

@@ -68,8 +68,8 @@ feature_params = struct('template_size', 36, 'hog_cell_size', 6);
 % ***********************************TODO*********************************************************************************
 
 if exist('var_features_pos.mat', 'file') && exist('var_features_neg.mat', 'file')
-    load('var_features_pos.mat');
-    load('var_features_neg.mat');
+    load('var_features_pos.mat', 'features_pos');
+    load('var_features_neg.mat', 'features_neg');
 else
     num_negative_examples = 10000; %Higher will work strictly better, but you should start with 10000 for debugging
     features_pos = get_positive_features( train_path_pos, feature_params );
@@ -91,7 +91,12 @@ end
 %YOU CODE classifier training. Make sure the outputs are 'w' and 'b'.
 % ***********************************TODO*********************************************************************************
 
-[w, b] = classifier_training(features_pos, features_neg, feature_params);
+if exist('var_svm_w.mat', 'file') && exist('var_svm_b.mat', 'file')
+    load('var_svm_w.mat', 'w');
+    load('var_svm_b.mat', 'b');
+else
+    [w, b] = classifier_training(features_pos, features_neg, feature_params);
+end
 
 % ************************************************************************************************************************
 
