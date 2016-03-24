@@ -41,6 +41,10 @@ function features_neg = get_random_negative_features(non_face_scn_path, feature_
     while count <= num_samples
         index = randi(num_images);
         img_path = fullfile(non_face_scn_path, image_files(index).name);
+        img = single(imread(img_path))/255;
+        if(size(img,3) > 1)
+            img = rgb2gray(img);
+        end
         img = imread(img_path);
         [hei, wid, dim] = size(img);
         pos_top = randi(hei - feature_params.template_size);

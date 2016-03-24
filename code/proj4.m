@@ -67,15 +67,15 @@ feature_params = struct('template_size', 36, 'hog_cell_size', 6);
 % YOU CODE 'get_positive_features' and 'get_random_negative_features'
 % ***********************************TODO*********************************************************************************
 
-if exist('features_pos.mat', 'file') && exist('features_neg.mat', 'file')
-    load('features_pos.mat');
-    load('features_neg.mat');
+if exist('var_features_pos.mat', 'file') && exist('var_features_neg.mat', 'file')
+    load('var_features_pos.mat');
+    load('var_features_neg.mat');
 else
     num_negative_examples = 10000; %Higher will work strictly better, but you should start with 10000 for debugging
     features_pos = get_positive_features( train_path_pos, feature_params );
     features_neg = get_random_negative_features( non_face_scn_path, feature_params, num_negative_examples);
-    save('features_pos.mat', 'features_pos');
-    save('features_neg.mat', 'features_neg');
+    save('var_features_pos.mat', 'features_pos');
+    save('var_features_neg.mat', 'features_neg');
 end
 
 % ************************************************************************************************************************
