@@ -60,9 +60,9 @@ function [bboxes, confidences, image_ids] = ....
 
         % *******************************TODO*********************************************
 
-        %if i>3
-            %break;
-        %end
+        if i>5
+            break;
+        end
 
         cur_x_min = [];
         cur_y_min = [];
@@ -82,7 +82,7 @@ function [bboxes, confidences, image_ids] = ....
                     img_temp = img(row:row+temp_size-1, col:col+temp_size-1,:);
                     hog = vl_hog(img_temp, cell_size);
                     conf = (hog(:)')*w + b;
-                    if conf > 1.2 
+                    if conf > 1.0 
                         cur_x_min = curr_exp*col;
                         cur_y_min= curr_exp*row;
                         cur_bboxes = [cur_bboxes; ...

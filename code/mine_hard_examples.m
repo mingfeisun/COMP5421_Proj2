@@ -43,7 +43,7 @@ function [mine_w, mine_b] =  mine_hard_examples(features_pos, features_neg, non_
 
     feature = [features_pos', new_feat_neg(1:neg_len, :)'];
 
-    [mine_w, mine_b] = vl_svmtrain(feature, label, 8*1e-5);
+    [mine_w, mine_b] = vl_svmtrain(feature, label, 1e-4);
 
     save('var_mine_w.mat', 'mine_w');
     save('var_mine_b.mat', 'mine_b');
