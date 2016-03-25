@@ -60,9 +60,9 @@ function [bboxes, confidences, image_ids] = ....
 
         % *******************************TODO*********************************************
 
-        if i>5
-            break;
-        end
+        %if i>5
+            %break;
+        %end
 
         cur_x_min = [];
         cur_y_min = [];
