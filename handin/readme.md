@@ -2,9 +2,9 @@
 THIS IS THE COMP5421(2016 SPRING) PROJECT 2 REPORT
 
 ## DETAILS
-PROJECT: FACE DETECTION
-AUTHOR: MINGFEI SUN
-DATE: MAR-25-2016
+PROJECT NAME:  Face Detection
+AUTHOR NAME:   Mingfei SUN
+CONTACT ME:    mingfei.sun.hk@gmail.com
 
 ## WHAT HAS BEEN DONE 
 1. Use the training images to create positive and negative training HoG features.
