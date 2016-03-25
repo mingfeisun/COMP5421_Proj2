@@ -145,9 +145,31 @@ imwrite(hog_template_image, 'visualizations/hog_template.png')
 % confidence level.
 % ***********************************TODO*********************************************************************************
 
-[mine_w, mine_b] = mine_hard_examples(features_pos, non_face_scn_path);
+if exist('var_mine_w.mat', 'file') && exist('var_mine_b.mat', 'file')
+    load('var_mine_w.mat', 'mine_w');
+    load('var_mine_b.mat', 'mine_b');
+else
+    [mine_w, mine_b] = mine_hard_examples(features_pos, features_neg, non_face_scn_path, w, b, feature_params);
+end
+
+% same as above initial classifier
+fprintf('Mined classifier performance on train data:\n')
+confidences = [features_pos; features_neg]*mine_w + mine_b;
+label_vector = [ones(size(features_pos,1),1); -1*ones(size(features_neg,1),1)];
+[tp_rate, fp_rate, tn_rate, fn_rate] =  report_accuracy( confidences, label_vector );
+
+non_face_confs = confidences( label_vector < 0);
+face_confs     = confidences( label_vector > 0);
+figure(2); 
+plot(sort(face_confs), 'g'); hold on
+plot(sort(non_face_confs),'r'); 
+plot([0 size(non_face_confs,1)], [0 0], 'b');
+hold off;
 
 % ************************************************************************************************************************
+
+
+
 
 
 %% Step 5. Run detector on test set.
@@ -156,7 +178,7 @@ imwrite(hog_template_image, 'visualizations/hog_template.png')
 % YOU CODE 'run_detector'. Make sure the outputs are properly structured!
 % ***********************************TODO*********************************************************************************
 
-[bboxes, confidences, image_ids] = run_detector(test_scn_path, w, b, feature_params);
+[bboxes, confidences, image_ids] = run_detector(test_scn_path, mine_w, mine_b, feature_params);
 
 % ************************************************************************************************************************
 
