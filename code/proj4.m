@@ -143,6 +143,11 @@ imwrite(hog_template_image, 'visualizations/hog_template.png')
 % you probably want to modify 'run_detector', run the detector on the
 % images in 'non_face_scn_path', and keep all of the features above some
 % confidence level.
+% ***********************************TODO*********************************************************************************
+
+[mine_w, mine_b] = mine_hard_examples(features_pos, non_face_scn_path);
+
+% ************************************************************************************************************************
 
 
 %% Step 5. Run detector on test set.
