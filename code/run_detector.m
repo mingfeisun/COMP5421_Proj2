@@ -53,13 +53,14 @@ function [bboxes, confidences, image_ids] = ....
 
         % *******************************TODO*********************************************
 
-        %if i > 2
+        %if i > 3
             %break;
         %end
-        
+
         cur_x_min = [];
         cur_y_min = [];
         features = [];
+        cur_bboxes=[];
         cur_confidences = [];
         cur_image_ids = cell(0, 1);
 
@@ -67,39 +68,36 @@ function [bboxes, confidences, image_ids] = ....
         cell_size = feature_params.hog_cell_size;
         scale = 0.7;
         curr_exp = 1;
+        step_size = 3;
 
-        [hei, wid, ~] = size(img);
+        [height, width, ~] = size(img);
+        ori_img = img;
 
-        while hei >= temp_size && wid >= temp_size
+        while height >= temp_size && width >= temp_size
 
-            for row = 1:cell_size:hei-1
-                if row > hei - temp_size 
-                    row = hei - temp_size ;
-                end
-                for col = 1:cell_size:wid-1
-                    if col > wid - temp_size  
-                        col = wid - temp_size ;
-                    end
+            for row = 1 : step_size : height-temp_size
+                for col = 1 : step_size : width-temp_size
+
                     img_temp = imcrop(img, [col, row, temp_size-1, temp_size-1]);
                     hog = vl_hog(single(img_temp), feature_params.hog_cell_size);
                     conf = (hog(:)')*w + b;
-                    if conf > 0.35
-                        cur_x_min = [cur_x_min; col*curr_exp];
-                        cur_y_min= [cur_y_min; row*curr_exp];
+                    if conf > 0.75
+                        cur_x_min = curr_exp*col;
+                        cur_y_min= curr_exp*row;
+                        cur_bboxes = [cur_bboxes; ...
+                            round([cur_x_min, cur_y_min, cur_x_min+curr_exp*temp_size-1, cur_y_min+curr_exp*temp_size-1])];
                         cur_confidences = [cur_confidences; conf];
                         cur_image_ids = [cur_image_ids; test_scenes(i).name];
                     end
+
                 end
             end
-            cur_bboxes = [cur_x_min, cur_y_min, cur_x_min+temp_size*curr_exp-1, cur_y_min+temp_size*curr_exp-1];
 
             img = imresize(img, scale);
             curr_exp = curr_exp/scale;
-            [hei, wid, ~] = size(img);
+            [height, width, ~] = size(img);
         end
 
-        % ********************************************************************************
-        
         %non_max_supr_bbox can actually get somewhat slow with thousands of
         %initial detections. You could pre-filter the detections by confidence,
         %e.g. a detection with confidence -1.1 will probably never be
@@ -108,7 +106,7 @@ function [bboxes, confidences, image_ids] = ....
         %anything in non_max_supr_bbox, but you can.
         
         if length(cur_bboxes)>0
-            [is_maximum] = non_max_supr_bbox(cur_bboxes, cur_confidences, size(img));
+            [is_maximum] = non_max_supr_bbox(cur_bboxes, cur_confidences, size(ori_img));
             cur_confidences = cur_confidences(is_maximum,:);
             cur_bboxes      = cur_bboxes(     is_maximum,:);
             cur_image_ids   = cur_image_ids(  is_maximum,:);
@@ -117,4 +115,6 @@ function [bboxes, confidences, image_ids] = ....
         bboxes      = [bboxes;      cur_bboxes];
         confidences = [confidences; cur_confidences];
         image_ids   = [image_ids;   cur_image_ids];
+
+        % ********************************************************************************
     end
