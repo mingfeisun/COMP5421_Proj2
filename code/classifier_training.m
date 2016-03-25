@@ -6,6 +6,6 @@ function [w, b] = classifier_training(features_pos, features_neg, feature_params
     label = ones(pos_len + neg_len, 1);
     label(neg_len:end) = -1*label(neg_len:end);
     feature = [features_pos', features_neg'];
-    [w, b] = vl_svmtrain(feature, label, 0.0001);
+    [w, b] = vl_svmtrain(feature, label, 0.00009);
     save('var_svm_w.mat', 'w');
     save('var_svm_b.mat', 'b');

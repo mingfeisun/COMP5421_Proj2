@@ -65,38 +65,40 @@ function [bboxes, confidences, image_ids] = ....
 
         temp_size = feature_params.template_size;
         cell_size = feature_params.hog_cell_size;
+        scale = 0.7;
+        curr_exp = 1;
+
         [hei, wid, ~] = size(img);
 
-        for row = 1:cell_size:hei
-            if row > hei - temp_size 
-                row = hei - temp_size ;
-            end
-            for col = 1:cell_size:wid
-                if col > wid - temp_size  
-                    col = wid - temp_size ;
+        while hei >= temp_size && wid >= temp_size
+
+            for row = 1:cell_size:hei-1
+                if row > hei - temp_size 
+                    row = hei - temp_size ;
                 end
-                img_temp = imcrop(img, [col, row, temp_size-1, temp_size-1]);
-                hog = vl_hog(single(img_temp), feature_params.hog_cell_size);
-                conf = (hog(:)')*w + b;
-                if conf > 0.0
-                    cur_x_min = [cur_x_min; col];
-                    cur_y_min= [cur_y_min; row];
-                    cur_confidences = [cur_confidences; conf];
-                    cur_image_ids = [cur_image_ids; test_scenes(i).name];
+                for col = 1:cell_size:wid-1
+                    if col > wid - temp_size  
+                        col = wid - temp_size ;
+                    end
+                    img_temp = imcrop(img, [col, row, temp_size-1, temp_size-1]);
+                    hog = vl_hog(single(img_temp), feature_params.hog_cell_size);
+                    conf = (hog(:)')*w + b;
+                    if conf > 0.35
+                        cur_x_min = [cur_x_min; col*curr_exp];
+                        cur_y_min= [cur_y_min; row*curr_exp];
+                        cur_confidences = [cur_confidences; conf];
+                        cur_image_ids = [cur_image_ids; test_scenes(i).name];
+                    end
                 end
             end
+            cur_bboxes = [cur_x_min, cur_y_min, cur_x_min+temp_size*curr_exp-1, cur_y_min+temp_size*curr_exp-1];
+
+            img = imresize(img, scale);
+            curr_exp = curr_exp/scale;
+            [hei, wid, ~] = size(img);
         end
 
-        cur_bboxes = [cur_x_min, cur_y_min, cur_x_min + temp_size-1, cur_y_min + temp_size-1];
-
         % ********************************************************************************
-        %You can delete all of this below.
-        % Let's create 15 random detections per image
-        %cur_x_min = rand(15,1) * size(img,2);
-        %cur_y_min = rand(15,1) * size(img,1);
-        %cur_bboxes = [cur_x_min, cur_y_min, cur_x_min + rand(15,1) * 50, cur_y_min + rand(15,1) * 50];
-        %cur_confidences = rand(15,1) * 4 - 2; %confidences in the range [-2 2]
-        %cur_image_ids(1:15,1) = {test_scenes(i).name};
         
         %non_max_supr_bbox can actually get somewhat slow with thousands of
         %initial detections. You could pre-filter the detections by confidence,
@@ -104,11 +106,13 @@ function [bboxes, confidences, image_ids] = ....
         %meaningful. You probably _don't_ want to threshold at 0.0, though. You
         %can get higher recall with a lower threshold. You don't need to modify
         %anything in non_max_supr_bbox, but you can.
-
-        [is_maximum] = non_max_supr_bbox(cur_bboxes, cur_confidences, size(img));
-        cur_confidences = cur_confidences(is_maximum,:);
-        cur_bboxes      = cur_bboxes(     is_maximum,:);
-        cur_image_ids   = cur_image_ids(  is_maximum,:);
+        
+        if length(cur_bboxes)>0
+            [is_maximum] = non_max_supr_bbox(cur_bboxes, cur_confidences, size(img));
+            cur_confidences = cur_confidences(is_maximum,:);
+            cur_bboxes      = cur_bboxes(     is_maximum,:);
+            cur_image_ids   = cur_image_ids(  is_maximum,:);
+        end
      
         bboxes      = [bboxes;      cur_bboxes];
         confidences = [confidences; cur_confidences];
