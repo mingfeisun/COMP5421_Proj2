@@ -53,10 +53,6 @@ function [bboxes, confidences, image_ids] = ....
 
         % *******************************TODO*********************************************
 
-        %if i > 3
-            %break;
-        %end
-
         cur_x_min = [];
         cur_y_min = [];
         features = [];
@@ -66,7 +62,7 @@ function [bboxes, confidences, image_ids] = ....
 
         temp_size = feature_params.template_size;
         cell_size = feature_params.hog_cell_size;
-        scale = 0.7;
+        scale = 0.9;
         curr_exp = 1;
         step_size = 3;
 
