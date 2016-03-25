@@ -46,12 +46,23 @@ function [bboxes, confidences, image_ids] = ....
     confidences = zeros(0,1);
     image_ids = cell(0,1);
 
+    temp_size = feature_params.template_size;
+    cell_size = feature_params.hog_cell_size;
+
+    % parameter
+    scale = 0.9;
+    step_size = 3;
+
     for i = 1:length(test_scenes)
           
-        fprintf('Detecting faces in %s\n', test_scenes(i).name)
-        img = imread( fullfile( test_scn_path, test_scenes(i).name ));
+        fprintf('Detecting faces in %s\n', test_scenes(i).name);
+        img = single(imread( fullfile( test_scn_path, test_scenes(i).name )));
 
         % *******************************TODO*********************************************
+
+        %if i>3
+            %break;
+        %end
 
         cur_x_min = [];
         cur_y_min = [];
@@ -60,24 +71,18 @@ function [bboxes, confidences, image_ids] = ....
         cur_confidences = [];
         cur_image_ids = cell(0, 1);
 
-        temp_size = feature_params.template_size;
-        cell_size = feature_params.hog_cell_size;
-        scale = 0.9;
-        curr_exp = 1;
-        step_size = 3;
-
-        [height, width, ~] = size(img);
         ori_img = img;
+        curr_exp = 1;
+        [height, width, ~] = size(img);
 
         while height >= temp_size && width >= temp_size
-
             for row = 1 : step_size : height-temp_size
                 for col = 1 : step_size : width-temp_size
 
-                    img_temp = imcrop(img, [col, row, temp_size-1, temp_size-1]);
-                    hog = vl_hog(single(img_temp), feature_params.hog_cell_size);
+                    img_temp = img(row:row+temp_size-1, col:col+temp_size-1,:);
+                    hog = vl_hog(img_temp, cell_size);
                     conf = (hog(:)')*w + b;
-                    if conf > 0.75
+                    if conf > 0.95
                         cur_x_min = curr_exp*col;
                         cur_y_min= curr_exp*row;
                         cur_bboxes = [cur_bboxes; ...
@@ -88,7 +93,6 @@ function [bboxes, confidences, image_ids] = ....
 
                 end
             end
-
             img = imresize(img, scale);
             curr_exp = curr_exp/scale;
             [height, width, ~] = size(img);
