@@ -82,7 +82,7 @@ function [bboxes, confidences, image_ids] = ....
                     img_temp = img(row:row+temp_size-1, col:col+temp_size-1,:);
                     hog = vl_hog(img_temp, cell_size);
                     conf = (hog(:)')*w + b;
-                    if conf > 0.95
+                    if conf > 1.2 
                         cur_x_min = curr_exp*col;
                         cur_y_min= curr_exp*row;
                         cur_bboxes = [cur_bboxes; ...
